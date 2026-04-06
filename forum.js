@@ -692,4 +692,36 @@
     loadThreads();
   });
 
+  document.addEventListener("DOMContentLoaded", () => {
+  const rulesContent = document.getElementById("rules-content");
+  const checkbox = document.getElementById("rules-checkbox");
+  const continueBtn = document.getElementById("rules-continue");
+  const overlay = document.getElementById("rules-gate");
+
+  // Disable page interaction until accepted
+  document.body.style.overflow = "hidden";
+
+  // Detect scroll to bottom
+  rulesContent.addEventListener("scroll", () => {
+    const isBottom =
+      rulesContent.scrollTop + rulesContent.clientHeight >= rulesContent.scrollHeight - 5;
+
+    if (isBottom) {
+      checkbox.disabled = false;
+    }
+  });
+
+  // Enable button when checked
+  checkbox.addEventListener("change", () => {
+    continueBtn.disabled = !checkbox.checked;
+  });
+
+  // Close modal
+  continueBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+    document.body.style.overflow = "auto";
+  });
+
+});
+
 })();
