@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecUnited — Forum</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+<link href="forum.css" rel="stylesheet">
+
+<!-- Firebase SDK (Compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <span>OFFICIAL REvIVAL PROJECT:</span>
+  <strong>RecUnited</strong>
+  <div class="topbar-links">
+    <a href="https://discord.gg/YjyBSMwTQD" target="_blank">Discord</a>
+    <a href="about.html">Server: Building</a>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img class="logo-img" src="RecUnited-logo-2.png" alt="RecUnited Logo" onerror="this.src='https://placehold.co/200x80/FF5515/FFFFFF?text=RecUnited&font=Montserrat'">
+  </a>
+
+  <ul class="nav-links">
+    <li class="nav-item"><a href="index.html">Home</a></li>
+    <li class="nav-item"><a href="about.html">About</a></li>
+    <li class="nav-item"><a href="faq.html">FAQ</a></li>
+    <li class="nav-item"><a href="forum.html" style="color:var(--orange);">Forum</a></li>
+    <li class="nav-item">
+      <a href="https://discord.gg/YjyBSMwTQD" target="_blank" class="nav-link-btn">Discord</a>
+    </li>
+    <li class="nav-item" id="nav-admin-link" style="display:none;">
+      <a href="admin.html" style="color:var(--orange);">Admin</a>
+    </li>
+  </ul>
+</nav>
+
+<section class="hero hero-small">
+  <div class="hero-inner">
+    <h1>Community Forum</h1>
+    <p class="hero-sub">Share ideas, discuss strategies, and connect with fellow RecUnited players.</p>
+  </div>
+</section>
+
+<section class="section section-forum">
+  <div class="section-inner">
+
+    <!-- Auth Bar -->
+    <div class="forum-auth-bar">
+      <div id="auth-container">
+        <button class="btn-outline btn-sm" onclick="openAuthModal('login')">Login</button>
+        <button class="btn-orange btn-sm" onclick="openAuthModal('signup')">Sign Up</button>
+        <button class="btn-text" onclick="handleAnonymousSignIn()">Browse as Guest</button>
+      </div>
+    </div>
+
+    <!-- Forum Container -->
+    <div id="forum-container">
+      <div class="forum-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading forum...</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="forum-actions">
+      <button class="btn-orange" onclick="openNewThreadModal()">+ New Thread</button>
+      <button class="btn-outline" id="mod-panel-btn" style="display:none;" onclick="openModerationPanel()">&#9881; Moderation</button>
+      <button class="btn-outline" id="admin-panel-btn" style="display:none;" onclick="window.location.href='admin.html'">&#128736; Admin Panel</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════ MODALS ═══════ -->
+
+<!-- Auth Modal (Login / Signup) -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-content modal-auth">
+    <div class="modal-header">
+      <h2 id="auth-modal-title">Login</h2>
+      <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Enter your password" required>
+      </div>
+      <div class="form-group form-group-inline">
+        <button type="submit" class="btn-orange">Login</button>
+        <button type="button" class="btn-text" onclick="handlePasswordReset()">Forgot Password?</button>
+      </div>
+      <div id="login-error" class="form-error"></div>
+      <div class="form-switch">
+        Don't have an account? <button type="button" class="btn-text" onclick="switchAuthMode('signup')">Sign Up</button>
+      </div>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signup-form" onsubmit="handleSignup(event)" style="display:none;">
+      <div class="form-group">
+        <label for="signup-name">Display Name</label>
+        <input type="text" id="signup-name" placeholder="How should we call you?" required>
+      </div>
+      <div class="form-group">
+        <label for="signup-email">Email</label>
+        <input type="email" id="signup-email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="signup-confirm">Confirm Password</label>
+        <input type="password" id="signup-confirm" placeholder="Re-enter your password" required minlength="6">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn-orange">Create Account</button>
+      </div>
+      <div id="signup-error" class="form-error"></div>
+      <div class="form-switch">
+        Already have an account? <button type="button" class="btn-text" onclick="switchAuthMode('login')">Login</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Link Account Modal (for anonymous users) -->
+<div class="modal-overlay" id="link-account-modal">
+  <div class="modal-content modal-auth">
+    <div class="modal-header">
+      <h2>Link Your Account</h2>
+      <button class="modal-close" onclick="closeLinkAccountModal()">&times;</button>
+    </div>
+    <form onsubmit="handleLinkAccount(event)">
+      <p class="modal-hint">Save your guest session as a permanent account. You won't lose your activity.</p>
+      <div class="form-group">
+        <label for="link-displayname">Display Name</label>
+        <input type="text" id="link-displayname" placeholder="Pick a display name" required>
+      </div>
+      <div class="form-group">
+        <label for="link-email">Email</label>
+        <input type="email" id="link-email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="link-password">Password</label>
+        <input type="password" id="link-password" placeholder="At least 6 characters" required minlength="6">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn-orange">Link Account</button>
+      </div>
+      <div id="link-error" class="form-error"></div>
+    </form>
+  </div>
+</div>
+
+<!-- New Thread Modal -->
+<div class="modal-overlay" id="new-thread-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Create New Thread</h2>
+      <button class="modal-close" onclick="closeNewThreadModal()">&times;</button>
+    </div>
+    <form id="new-thread-form" onsubmit="submitThread(event)">
+      <div class="form-group">
+        <label for="thread-title-input">Title</label>
+        <input type="text" id="thread-title-input" placeholder="Enter thread title..." required>
+      </div>
+      <div class="form-group">
+        <label for="thread-category-input">Category</label>
+        <select id="thread-category-input" required>
+          <option value="">Select a category...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="thread-body-input">Content</label>
+        <textarea id="thread-body-input" rows="6" placeholder="Write your post..." required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-outline" onclick="closeNewThreadModal()">Cancel</button>
+        <button type="submit" class="btn-orange">Create Thread</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Thread Detail Modal -->
+<div class="modal-overlay" id="thread-detail-modal">
+  <div class="modal-content modal-large">
+    <div class="modal-header">
+      <h2 id="thread-detail-title">Thread Title</h2>
+      <button class="modal-close" onclick="closeThreadDetail()">&times;</button>
+    </div>
+    <div id="thread-detail-body">
+      <!-- Thread content and replies injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-content modal-auth">
+    <div class="modal-header">
+      <h2>Report Content</h2>
+      <button class="modal-close" onclick="closeReportModal()">&times;</button>
+    </div>
+    <form onsubmit="submitReport(event)">
+      <input type="hidden" id="report-target-id">
+      <input type="hidden" id="report-target-type">
+      <div class="form-group">
+        <label for="report-reason">Reason for report</label>
+        <textarea id="report-reason" rows="4" placeholder="Describe why this content should be reviewed..." required></textarea>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn-orange">Submit Report</button>
+      </div>
+      <div id="report-error" class="form-error"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Moderation Panel -->
+<div class="modal-overlay" id="mod-panel">
+  <div class="modal-content modal-large">
+    <div class="modal-header">
+      <h2>&#9881; Moderation Panel</h2>
+      <button class="modal-close" onclick="closeModPanel()">&times;</button>
+    </div>
+    <div id="mod-reports-container" style="padding: 32px;">
+      <p class="mod-empty">Loading reports...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <a class="footer-logo" href="index.html">
+    <img src="RecUnited-logo-2.png" alt="Logo" style="height:36px; object-fit:contain;" onerror="this.style.display='none'">
+    RecUnited
+  </a>
+  <span class="footer-copy">&copy; 2026 RecUnited &mdash; Founded by Idontknowanything 53. Website by Nicholas &amp; Idontknowanything 53. Not affiliated with Rec Room Inc.</span>
+  <div class="footer-links">
+    <a href="https://discord.gg/YjyBSMwTQD" target="_blank">Discord</a>
+    <a href="https://github.com/nicholasm624/RecUnited" target="_blank">GitHub</a>
+    <a href="faq.html">FAQ</a>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="script.js"></script>
+<script src="firebase-config.js"></script>
+<script src="firebase-init.js"></script>
+<script src="auth-service.js"></script>
+<script src="firestore-service.js"></script>
+<script src="forum.js"></script>
+</body>
+</html>
