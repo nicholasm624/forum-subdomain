@@ -341,3 +341,52 @@
   .thread-post-header { gap: 8px; }
   .btn-report { margin-left: 0; }
 }
+
+.rules-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42,31,26,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.rules-box {
+  background: var(--white);
+  border: var(--thick-border);
+  border-radius: 16px;
+  box-shadow: var(--hard-shadow);
+  max-width: 600px;
+  width: 90%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rules-box h2 {
+  font-family: 'Fredoka One', cursive;
+  text-transform: uppercase;
+}
+
+.rules-content {
+  height: 250px;
+  overflow-y: auto;
+  border: var(--thick-border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--off-white);
+  font-weight: 700;
+  color: var(--text-mid);
+}
+
+.rules-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rules-actions input {
+  margin-right: 8px;
+}
