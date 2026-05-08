@@ -1,118 +1,18 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
 <title>Site Maintenance</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --orange: #FF5515;
-  --orange-dark: #cc4410;
-  --off-white: #F9F6F0;
-  --white: #FFFFFF;
-  --text: #2A1F1A;
-  --text-mid: #524741;
-  --thick-border: 4px solid var(--text);
-  --hard-shadow: 6px 6px 0px rgba(42, 31, 26, 0.15);
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--off-white);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 24px;
-}
-
-/* Container styled like your cards */
-.maintenance-box {
-  background: var(--white);
-  border: var(--thick-border);
-  border-radius: 16px;
-  box-shadow: var(--hard-shadow);
-  max-width: 700px;
-  width: 100%;
-  padding: 48px 32px;
-  text-align: center;
-}
-
-/* Title like hero */
-h1 {
-  font-family: 'Fredoka One', cursive;
-  font-size: clamp(42px, 6vw, 64px);
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-
-h1 .orange {
-  color: var(--orange);
-}
-
-/* Text */
-p {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-mid);
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-/* Button styled like your site */
-.btn {
-  display: inline-block;
-  background: var(--orange);
-  color: white;
-  padding: 14px 28px;
-  border-radius: 14px;
-  font-weight: 900;
-  text-decoration: none;
-  border: var(--thick-border);
-  box-shadow: var(--hard-shadow);
-  text-transform: uppercase;
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-
-.btn:hover {
-  transform: translate(4px, 4px);
-  box-shadow: 2px 2px 0px rgba(42,31,26,0.15);
-  background: var(--orange-dark);
-}
-
-/* Highlight selection */
-::selection {
-  background: var(--orange);
-  color: #000;
-}
-
+  body { text-align: center; padding: 150px; }
+  h1 { font-size: 50px; }
+  body { font: 20px Helvetica, sans-serif; color: #333; }
+  article { display: block; text-align: left; width: 650px; margin: 0 auto; }
+  a { color: #dc8100; text-decoration: none; }
+  a:hover { color: #333; text-decoration: none; }
 </style>
-</head>
 
-<body>
-
-<div class="maintenance-box">
-  <h1>We’ll be <span class="orange">back</span> soon!</h1>
-
-  <p>
-    Sorry for the inconvenience, but we’re performing some maintenance right now.
-  </p>
-
-  <p>
-    If you need anything, feel free to reach out and we’ll get back to you.
-  </p>
-
-  <a href="https://discord.gg/YjyBSMwTQD" class="btn">Contact Us</a>
-
-  <p style="margin-top: 30px; font-size: 16px;">
-    — The RecUnited Team
-  </p>
-</div>
-
-</body>
-</html>
+<article>
+    <h1>We&rsquo;ll be back soon!</h1>
+    <div>
+        <p>Sorry for the inconvenience but we&rsquo;re performing some maintenance at the moment. If you need to you can always <a href="mailto:#">contact us</a>, otherwise we&rsquo;ll be back online shortly!</p>
+        <p>&mdash; The RecUnited Team</p>
+    </div>
+</article>
